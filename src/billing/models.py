@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.functions import Now
+from django.utils import timezone
 from django.conf import settings
 
 User = settings.AUTH_USER_MODEL
@@ -14,14 +14,22 @@ class Invoice(models.Model):
         CANCELLED = 'Cancelled'
         LATE = 'Late'
         
-    invoice_no = models.CharField(max_length=100)
-    date = models.DateTimeField(default=Now())
+    invoice_no = models.CharField(max_length=100, unique=True)
+    date = models.DateTimeField(default=timezone.now)
     due_date = models.DateTimeField()
     status = models.CharField(default=Status.UNPAID, choices=Status, max_length=20)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
 
+    def save(self, *args, **kwargs):
+        if not self.invoice_no:
+            self.invoice_no = f"INV#{int(self.date.strftime('%Y%m%d%H%M%S'))}"
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.invoice_no
+    
+    class Meta:
+        ordering = ['-date']
     
 
    
@@ -36,3 +44,6 @@ class ItemLine(models.Model):
 
     def __str__(self):
         return self.decription
+
+    class Meta:
+        verbose_name_plural = "ItemLines"
