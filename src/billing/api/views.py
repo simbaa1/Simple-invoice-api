@@ -3,8 +3,9 @@ from .serializers import ItemLineSerializer, \
     InvoiceSerializer, UserSerializer, User
 from billing.models import Invoice
 
-class InvoiceCreateView(generics.CreateAPIView):
+class InvoiceListCreateView(generics.ListCreateAPIView):
     serializer_class = InvoiceSerializer
+    queryset = Invoice.objects.all()
 
 
 class ClientListView(generics.ListAPIView):
@@ -12,6 +13,7 @@ class ClientListView(generics.ListAPIView):
     serializer_class = UserSerializer
 
 
-class InvoiceDetailView(generics.RetrieveAPIView):
+
+class InvoiceDetailView(generics.RetrieveDestroyAPIView):
     serializer_class = InvoiceSerializer
     queryset = Invoice.objects.all()
