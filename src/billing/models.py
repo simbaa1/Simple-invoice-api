@@ -9,7 +9,7 @@ User = settings.AUTH_USER_MODEL
 
 class Invoice(models.Model):
     class Status(models.TextChoices):
-        UNPAID = 'Pending'
+        UNPAID = 'Unpaid'
         PAID = 'Paid'
         CANCELLED = 'Cancelled'
         LATE = 'Late'
